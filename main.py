@@ -1,21 +1,19 @@
-import os
-import tkinter as tk
-from models import GooglePaLM
-from utills import rephrase, INITIAL_MESSAGE
+from multiprocessing import Process, Queue
+from utills import run_app, run_listener
+from config import API_KEYS
 
-# Set up the bot
-api_key = os.environ["PALM_API_KEY"]
-bot = GooglePaLM(api_key)
 
-root = tk.Tk()
-root.geometry("600x500")
-root.title("Rephrase Assistant")
+queue = Queue()
 
-# Create the output box with a monospace font
-terminal_output = tk.Text(root, wrap=tk.WORD, height=30, width=70, font="monospace", spacing1=2)
-terminal_output.pack(padx=10, pady=10)
+if __name__ == '__main__':
+    print("available models: GooglePaLM")
+    model_string = input("Enter the model you want to use: ")
+    api_key = API_KEYS[model_string]
+    p1 = Process(target=run_app, args=(queue,))
+    p2 = Process(target=run_listener, args=(model_string, api_key, queue,))
 
-root.bind("<Command-p>", lambda event: rephrase(bot, terminal_output))
-terminal_output.insert(tk.END, f"{INITIAL_MESSAGE}\n")
+    p1.start()  # Start the Tkinter app
+    p2.start()  # Start the keyboard listener
 
-root.mainloop()
+    p1.join()  # Wait for the Tkinter app to finish
+    p2.terminate()  # Terminate the keyboard listener (optional based on your design)
