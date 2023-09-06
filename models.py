@@ -1,5 +1,13 @@
 import google.generativeai as palm
-from config import CONTEXT, INITIAL_PROMPT, EXAMPLES
+
+# LLM parameters
+CONTEXT = "You job is to rephrase the sentences I'll give you according to the context of the application"
+INITIAL_PROMPT = "I will give you a sentence and a specific context in which it will be used. Your task is to" \
+                  " succinctly rephrase the sentence according to that context. Please keep your response brief," \
+                  " unless otherwise instructed, and include only the restructured sentence. Now, in one sentence," \
+                  " introduce yourself as my specialist in sentence rephrasing."
+EXAMPLES = [("application: discord. sentence: 'Hi guys, I could really use your help with this issue, is anyone up?'",
+            "Hey everyone, I could really use some help with this issue. Is anyone available?")]
 
 class LLM:
     def __call__(self, message: str) -> str:

@@ -1,52 +1,66 @@
-import tkinter as tk
-from KeyListener import KeyListener
-from models import LLM
-from tkinter import scrolledtext
-from models import GooglePaLM
-from config import INITIAL_MESSAGE
-from multiprocessing import Queue
+import os
+import subprocess
+from urllib.parse import urlparse
+from pynput import keyboard
+from mpi4py import MPI
 
 
-constructors = {"GooglePaLM": GooglePaLM}
+def set_env_variable(var_name, value, comm):
+    with open(os.path.expanduser('~/.zshrc'), 'a') as f:
+        f.write(f'export {var_name}={f"{value}"}\n')
+    print("Please reset the terminal session (source ~/.zshrc | /. bashrc) and start the program to apply the changes")
+    comm.Abort(0)
+    quit(0)
 
+def get_api_key(model_str: str, comm: MPI.Comm) -> str:
+    env_variable = model_str + "_API_KEY"
+    if os.environ.get(env_variable) is None:
+        api_key = '"' + input(f'Enter the API key for {model_str}: ') + '"'
+        set_env_variable(env_variable, api_key, comm)
 
-def rephrase(message: str, output: tk.Text) -> None:
-    output.configure(state="normal")
-    output.insert(tk.END, "-" * (output["width"] - 1) + "\n")
-    output.insert(tk.END, "Rephrasing...\n")
-    # output.insert(tk.END, f"User: {message}\n")
-    output.insert(tk.END, f"Assistant: {message}\n")
-    output.configure(state="disabled")
+    return os.environ[env_variable]
 
+def copy_selected_text_to_clipboard():
+    # This will simulate CMD+C on macOS, copying the selected text
+    # with keyboard.Controller() as controller:
+    controller = keyboard.Controller()
+    controller.press(keyboard.Key.cmd)
+    controller.press('c')
+    controller.release('c')
+    controller.release(keyboard.Key.cmd)
 
-def check_queue(root, queue, terminal_output):
+def get_active_app_name():
     try:
-        message = queue.get_nowait()
-        rephrase(message, terminal_output)
-    except:  # Queue is empty
-        pass
-    root.after(100, check_queue, root, queue, terminal_output)  # Check every 100ms
+        result = subprocess.run(
+            ['osascript', '-e', 'tell application "System Events" to get the name of every process whose frontmost is true'],
+            stdout=subprocess.PIPE
+        )
+        return result.stdout.decode('utf-8').strip()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
 
+def get_active_url():
+    try:
+        script = '''
+        tell application "Google Chrome"
+            get the url of the active tab of the front window
+        end tell
+        '''
+        result = subprocess.run(["osascript", "-e", script], capture_output=True)
+        return result.stdout.decode("utf-8").strip()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
 
-def run_app(queue: Queue) -> None:
-    # llm = GooglePaLM(PALM_API_KEY)
-    root = tk.Tk()
-    root.geometry("600x500")
-    root.title("Rephrase Assistant")
+def extract_website_name(url):
+    parsed_url = urlparse(url)
+    netloc = parsed_url.netloc
 
-    terminal_output = scrolledtext.ScrolledText(root, wrap=tk.WORD, font=("Courier", 14))
-    terminal_output.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
+    # Remove 'www.' if it exists
+    if netloc.startswith('www.'):
+        netloc = netloc[4:]
 
-    # root.bind("<Command-p>", lambda event: rephrase(llm, terminal_output))
-    terminal_output.configure(state="normal")
-    terminal_output.insert(tk.END, f"{INITIAL_MESSAGE}\n")
-    terminal_output.configure(state="disabled")
-
-    check_queue(root, queue, terminal_output)  # Start the periodic check
-    root.mainloop()
-
-
-def run_listener(model_str: str, api_key: str, queue: Queue) -> None:
-    llm = constructors[model_str](api_key)
-    key_listener = KeyListener(llm, queue)
-    key_listener.start()
+    # Get only the domain name, removing subdomains and port numbers if they exist
+    domain_name = netloc.split(':')[0].split('.')[-2]
+    return domain_name
