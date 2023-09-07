@@ -2,7 +2,12 @@ import pyperclip
 import time
 from pynput import keyboard
 from mpi4py import MPI
-from utills import copy_selected_text_to_clipboard, get_active_app_name, get_active_url, extract_website_name
+from utills import (
+    copy_selected_text_to_clipboard,
+    get_active_app_name,
+    get_active_url,
+    extract_website_name,
+)
 
 
 class KeyListener:
@@ -10,8 +15,14 @@ class KeyListener:
         self.comm = comm
         self.writer = writer
         self.current_keys = set()
-        self.COMBINATION = {keyboard.Key.cmd, keyboard.Key.ctrl, keyboard.KeyCode.from_char('r')}
-        self.listener = keyboard.Listener(on_press=self.on_key_down, on_release=self.on_key_up)
+        self.COMBINATION = {
+            keyboard.Key.cmd,
+            keyboard.Key.ctrl,
+            keyboard.KeyCode.from_char("r"),
+        }
+        self.listener = keyboard.Listener(
+            on_press=self.on_key_down, on_release=self.on_key_up
+        )
         self.is_activated = False  # Flag to track activation
 
     def on_key_down(self, key):

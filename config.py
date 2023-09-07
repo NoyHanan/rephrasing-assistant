@@ -1,12 +1,14 @@
-import os
-from models import GooglePaLM
+from models import GooglePaLM, OpenAI
 
 # MPI parameters
 MASTER_RANK = 0
 SUB_RANK = 1
 
+# prompt parameters
 PROMPT_TEMPLATE = "application: {app}. sentence: '{sentence}'"
 
-# API keys
-API_KEYS = {"GooglePaLM": os.environ["PALM_API_KEY"]}
-MODELS = {"GooglePaLM": GooglePaLM}
+# models constructors
+MODELS = {
+    "GooglePaLM": GooglePaLM,
+    "OpenAI": OpenAI,
+}
