@@ -43,10 +43,14 @@ class OpenAI(LLM):
     MODEL = "gpt-3.5-turbo"
     CONTEXT = "As a model proficient in English rephrasing, your \
         objective is to modify the provided sentence to align with the \
-        designated `talk style` of the application. Here's an illustration: \
+        designated `talk style` of the application. In addition, you \
+        should also mention the `talk style` you used. \
+        Here's an illustration: \
         Given: \
         Application: Discord. Sentence: 'Hi guys, I could really use \
         your help with this issue, is anyone up?' \
+        response: \
+        Talk Style: 'Discord conversation' \
         Suggested Rephrase: 'Hey everyone, I need some \
         assistance. Is anyone online?'"
 

@@ -22,5 +22,5 @@ def run_app(model_str: str, api_key: str, comm: MPI.Comm, sender: int) -> None:
         print(f"original sentence: {sentence}", flush=True)
         sentence = PROMPT_TEMPLATE.format(app=app, sentence=sentence)
         rephrased_sentence = llm(sentence)
-        print(f"Assistant: {rephrased_sentence}", flush=True)
+        print(f"\nAssistant: {rephrased_sentence}", flush=True)
         print("-" * 79)
