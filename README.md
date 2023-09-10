@@ -11,30 +11,31 @@ Welcome to the Personal Rephrasing Assistant, a Python terminal app designed to 
 
 ### 1. Clone the Repository
 
-\```
+```bash
 git clone https://github.com/NoyHanan/rephrasing-assistant.git
 cd rephrasing-assistant
-\```
+```
 
 ### 2. Set Up a Virtual Environment (Optional but recommended)
 
-\```python -m venv venv
+```bash
+python -m venv venv
 source venv/bin/activate  # On Windows, use`venv\Scripts\activate`
-\```
+```
 
 ### 3. Install Dependencies
 
-\```
+```bash
 pip install -r requirements.txt
-\```
+```
 
 ## Usage
 
 To start the Personal Rephrasing Assistant, run the following command in your terminal:
 
-\```
+```bash
 mpiexec -np 2 python main.py
-\```
+```
 
 Once the app is running, simply select the text you want to rephrase in any application and press `command + control + r`. The app will rephrase the text based on the context of the application you're using.
 
