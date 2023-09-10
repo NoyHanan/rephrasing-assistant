@@ -20,7 +20,7 @@ cd rephrasing-assistant
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows, use`venv\Scripts\activate`
+source venv/bin/activate
 ```
 
 ### 3. Install Dependencies
