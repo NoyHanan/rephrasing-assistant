@@ -9,7 +9,7 @@ INITIAL_MESSAGE = (
 )
 
 
-def run_app(model_str: str, api_key: str, comm: MPI.Comm, sender: int) -> None:
+def run_app_mac(model_str: str, api_key: str, comm: MPI.Comm, sender: int) -> None:
     print(f"{INITIAL_MESSAGE.format(model_str=model_str)}", flush=True)
     print("-" * 79)
     llm = MODELS[model_str](api_key)
