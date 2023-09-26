@@ -3,15 +3,20 @@ import subprocess
 from urllib.parse import urlparse
 from pynput import keyboard
 from mpi4py import MPI
+from config import COLOR_AND_BOLD, COLOR_RESET
 
 
 def get_model_str() -> str:
     print(
-        "available models: \n\
-        1. GooglePaLM \n\
-        2. OpenAI \n"
+        COLOR_AND_BOLD
+        + "available models:\n"
+        + COLOR_RESET
+        + "\t1. GooglePaLM \n\
+        2. OpenAI "
     )
-    model_str = input("Enter the model you want to use: ")
+    model_str = input(
+        COLOR_AND_BOLD + "Enter the model you want to use: " + COLOR_RESET,
+    )
     return model_str
 
 

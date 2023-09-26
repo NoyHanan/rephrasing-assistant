@@ -50,9 +50,8 @@ class OpenAI(LLM):
         Application: Discord. Sentence: 'Hi guys, I could really use \
         your help with this issue, is anyone up?' \
         response: \
-        Talk Style: 'Discord conversation' \
-        Suggested Rephrase: 'Hey everyone, I need some \
-        assistance. Is anyone online?'"
+        Talk Style: 'Discord conversation' Suggested Rephrase: 'Hey everyone, \
+        I need some assistance. Is anyone online?'"
 
     def __init__(self, api_key: str) -> None:
         openai.api_key = api_key
